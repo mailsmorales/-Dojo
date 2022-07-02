@@ -3,12 +3,12 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAIRcCJRA5orddtDgG02eBQgnC79tT9mwQ",
-  authDomain: "frilance-tracker.firebaseapp.com",
-  projectId: "frilance-tracker",
-  storageBucket: "frilance-tracker.appspot.com",
-  messagingSenderId: "463625997804",
-  appId: "1:463625997804:web:117bcf55d8761e846184c9",
+  apiKey: "AIzaSyBAr1L5KT293enWT7piRuaGZakFxHv8oss",
+  authDomain: "dojo-e78b6.firebaseapp.com",
+  projectId: "dojo-e78b6",
+  storageBucket: "dojo-e78b6.appspot.com",
+  messagingSenderId: "161755581053",
+  appId: "1:161755581053:web:f2c0c8ce31cc9cdb84bf14",
 };
 
 const app = initializeApp(firebaseConfig);
