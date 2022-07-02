@@ -15,13 +15,13 @@ const Sidebar = () => {
         <nav className="links">
           <ul>
             <li>
-              <NavLink exact to="/">
+              <NavLink to="/">
                 <img src={DashboardIcon} alt="dashboard icon" />
                 <span>Dashboard</span>
               </NavLink>
             </li>
             <li>
-              <NavLink exact to="/create">
+              <NavLink  to="/create">
                 <img src={AddIcon} alt="add project icon" />
                 <span>New Project</span>
               </NavLink>
