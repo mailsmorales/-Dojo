@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSignup } from "../../hooks/useSignup";
 import "./styles.css";
 
 const Signup = () => {
@@ -6,7 +7,8 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [thumbnail, setThumbnail] = useState(null);
-  const [thumbnailError, setThumbnailError] = useState("null");
+  const [thumbnailError, setThumbnailError] = useState(null);
+  const { signup, error, isPending } = useSignup();
 
   const handleChangeFile = (event) => {
     const selected = event.target.files[0];
@@ -14,16 +16,24 @@ const Signup = () => {
     console.log(selected);
 
     if (!selected) return setThumbnailError("Пожалуйста, выберите файл");
-    if (selected.type !== "image") return setThumbnailError("Пожалуйста, выберите валидную картинку")
-    if (selected.seze >= 1000000) return setThumbnailError("Пожалуйста, выберите файл размером меньше 100кб")
+    if (!selected.type.includes("image"))
+      return setThumbnailError("Пожалуйста, выберите валидную картинку");
+    if (selected.size >= 250000)
+      return setThumbnailError(
+        "Пожалуйста, выберите файл размером меньше 100кб"
+      );
 
+    setThumbnail(selected);
+    setThumbnailError(null);
+  };
 
-    setThumbnail(selected)
-    setThumbnailError(null)
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    await signup(email, password, displayName, thumbnail);
   };
 
   return (
-    <form className="auth-form">
+    <form onSubmit={handleSubmit} className="auth-form">
       <h2>Sign up</h2>
       <label>
         <span>Email:</span>
@@ -57,7 +67,9 @@ const Signup = () => {
         <input required type="file" onChange={handleChangeFile} />
         {thumbnailError && <span className="error">{thumbnailError}</span>}
       </label>
-      <button className="btn">Sign up</button>
+      {!isPending && <button className="btn">Sign up</button>}
+      {isPending && <button className="btn">Loading...</button>}
+      {error && <div className="error">{error}</div>}
     </form>
   );
 };
