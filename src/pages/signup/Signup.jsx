@@ -32,6 +32,8 @@ const Signup = () => {
     await signup(email, password, displayName, thumbnail);
   };
 
+  
+
   return (
     <form onSubmit={handleSubmit} className="auth-form">
       <h2>Sign up</h2>
