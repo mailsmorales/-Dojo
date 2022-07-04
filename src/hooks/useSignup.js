@@ -1,12 +1,14 @@
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
-import { auth } from "../firebase/config";
+import { auth, storage, firestore } from "../firebase/config";
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { doc, collection, setDoc } from "firebase/firestore";
 
 export const useSignup = () => {
   const [error, setError] = useState(null);
   const [isPending, setIsPending] = useState(false);
 
-  const signup = async (email, password, name) => {
+  const signup = async (email, password, name, file) => {
     setError(null);
     setIsPending(true);
 
@@ -16,15 +18,31 @@ export const useSignup = () => {
         email,
         password
       );
+
+      const uploadPath = `avatars/${response.user.uid}/${file.name}`;
+      const imgRef = ref(storage, uploadPath);
+      const uploadedImg = await uploadBytesResumable(imgRef, file);
+      const imgUrl = await getDownloadURL(uploadedImg.ref);
+
+      const usersRef = doc(firestore, "users", response.user.uid);
+
+      await setDoc(usersRef, {
+        isOnline: true,
+        displayName: name,
+        photoURl: imgUrl,
+        email,
+      });
+
       await updateProfile(response.user, {
         displayName: name,
+        photoURl: imgUrl,
       });
-    //   console.log(response);
+      //   console.log(response);
 
       setIsPending(false);
       setError(null);
     } catch (error) {
-    //   console.log(error.message);
+      //   console.log(error.message);
       setError(error.message);
       setIsPending(false);
     }
