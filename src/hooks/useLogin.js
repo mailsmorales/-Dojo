@@ -1,10 +1,10 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { useState, useEffect } from "react";
-import { auth } from "../firebase/config";
+import { doc, setDoc } from "firebase/firestore";
+import { useState } from "react";
+import { auth, firestore } from "../firebase/config";
 import { useAuthContext } from "./useAuthContext";
 
 export const useLogin = () => {
-  const [isCancelled, setIsCancelled] = useState(false);
   const [error, setError] = useState(null);
   const [isPending, setIsPending] = useState(false);
   const { dispatch } = useAuthContext();
@@ -16,23 +16,21 @@ export const useLogin = () => {
     try {
       const { user } = await signInWithEmailAndPassword(auth, email, password); // Юзер проходит авторизацию
 
-      dispatch({ type: "LOGIN", playoad: user });
+      const usersRef = doc(firestore, "users", user.uid);
 
-      if (!isCancelled) {
-        setIsPending(false);
-        setError(null);
-      }
+      await setDoc(usersRef, { isOnline: true }, { merge: true });
+      await dispatch({ type: "LOGIN", playoad: user });
+
+      setIsPending(false);
+      setError(null);
+      return user;
     } catch (err) {
-      if (!isCancelled) {
-        setError(err.message);
-        setIsPending(false);
-      }
+      setError(err.message);
+      setIsPending(false);
     }
   };
 
-  useEffect(() => {
-    return () => setIsCancelled(true);
-  }, []);
+ 
 
   return { login, isPending, error };
 };
