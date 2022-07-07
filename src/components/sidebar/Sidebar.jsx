@@ -8,6 +8,8 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 
 const Sidebar = () => {
   const { user } = useAuthContext();
+  // console.log(user);
+
   return (
     <div className="sidebar">
       <div className="sidebar-content">

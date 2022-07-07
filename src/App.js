@@ -1,6 +1,7 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import Dashboard from "./pages/dashboard/Dashboard";
 import Create from "./pages/create/Create";
@@ -15,16 +16,21 @@ import { useEffect } from "react";
 const PrivateRoute = (Component) => {
   const { user } = useAuthContext();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    if (!user) navigate("/login");
-  }, [navigate, user]);
+    const publicRoutes = ["/login", "/signup"];
+    if (!user && !publicRoutes.includes(location.pathname)) {
+      navigate("/login");
+    }
+  }, [location, navigate, user]);
 
   return Component;
 };
 
 function App() {
   const { user } = useAuthContext();
+
   return (
     <div className="App">
       {user && <Sidebar />}

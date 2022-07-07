@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSignup } from "../../hooks/useSignup";
+import { useNavigate } from "react-router-dom";
 import "./styles.css";
 
 const Signup = () => {
@@ -9,6 +10,7 @@ const Signup = () => {
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailError, setThumbnailError] = useState(null);
   const { signup, error, isPending } = useSignup();
+  const navigate = useNavigate();
 
   const handleChangeFile = (event) => {
     const selected = event.target.files[0];
@@ -30,9 +32,8 @@ const Signup = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     await signup(email, password, displayName, thumbnail);
+    navigate("/");
   };
-
-  
 
   return (
     <form onSubmit={handleSubmit} className="auth-form">

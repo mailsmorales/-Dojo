@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import { useLogin } from "../../hooks/useLogin";
+import { useNavigate } from "react-router-dom";
 import "./styles.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login, error, isPending } = useLogin();
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    await login(email, password);
+    const user = await login(email, password);
+    if (user) navigate("/");
   };
 
   return (

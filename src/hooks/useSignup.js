@@ -2,7 +2,7 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
 import { auth, storage, firestore } from "../firebase/config";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
-import { doc, collection, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 
 export const useSignup = () => {
   const [error, setError] = useState(null);
@@ -29,15 +29,15 @@ export const useSignup = () => {
       await setDoc(usersRef, {
         isOnline: true,
         displayName: name,
-        photoURl: imgUrl,
+        photoURL: imgUrl,
         email,
       });
 
       await updateProfile(response.user, {
         displayName: name,
-        photoURl: imgUrl,
+        photoURL: imgUrl,
       });
-      //   console.log(response);
+        // console.log(response);
 
       setIsPending(false);
       setError(null);
