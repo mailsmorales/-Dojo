@@ -1,5 +1,6 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import Dashboard from "./pages/dashboard/Dashboard";
 import Create from "./pages/create/Create";
@@ -8,17 +9,31 @@ import Signup from "./pages/signup/Signup";
 import Project from "./pages/project/Project";
 import Navbar from "./components/navbar/Navbar";
 import Sidebar from "./components/sidebar/Sidebar";
+import { useAuthContext } from "./hooks/useAuthContext";
+import { useEffect } from "react";
+
+const PrivateRoute = (Component) => {
+  const { user } = useAuthContext();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) navigate("/login");
+  }, [navigate, user]);
+
+  return Component;
+};
 
 function App() {
+  const { user } = useAuthContext();
   return (
     <div className="App">
-      <Sidebar />
+      {user && <Sidebar />}
       <div className="container">
         <Navbar />
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/create" element={<Create />} />
-          <Route path="/projects/:id" element={<Project />} />
+          <Route path="/" element={PrivateRoute(<Dashboard />)} />
+          <Route path="/create" element={PrivateRoute(<Create />)} />
+          <Route path="/projects/:id" element={PrivateRoute(<Project />)} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>
