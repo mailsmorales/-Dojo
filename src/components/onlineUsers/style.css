@@ -1,7 +1,7 @@
 .user-list {
   width: 250px;
   min-width: 250px;
-  padding: 40px;
+  padding: 30px;
   box-sizing: border-box;
   background: #fbfbfb;
   color: var(--heading-color);
@@ -17,6 +17,7 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  margin: 20px auto;
 }
 .user-list .avatar {
   margin-left: 10px;
@@ -24,7 +25,7 @@
   height: 40px;
 }
 
-/* onlime users */
+/* online users */
 .user-list .online-user {
   display: inline-block;
   margin-right: 10px;

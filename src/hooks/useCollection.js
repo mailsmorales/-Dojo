@@ -75,10 +75,7 @@ export const useGetCollection = (collectionName, options) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const collectionRef = query(
-      collection(firestore, collectionName),
-      options ? options : null
-    );
+    const collectionRef = query(collection(firestore, collectionName));
 
     const unsubscribe = onSnapshot(collectionRef, (snap) => {
       let results = [];

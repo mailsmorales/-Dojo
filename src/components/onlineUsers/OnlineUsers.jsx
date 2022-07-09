@@ -4,7 +4,7 @@ import Avatar from "../avatar/Avatar";
 import "./style.css";
 
 const OnlineUsers = () => {
-  const { error, documents } = useGetCollection();
+  const { error, documents } = useGetCollection("users");
   return (
     <div className="user-list">
       <h2>All Users</h2>
@@ -12,7 +12,7 @@ const OnlineUsers = () => {
       {documents &&
         documents.map((user) => {
           return (
-            <div key={user.id}>
+            <div key={user.id} className="user-list-item">
               <span>{user.displayName}</span>
               <Avatar src={user.photoURL} />
             </div>
