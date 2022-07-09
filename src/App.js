@@ -1,7 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 
 import Dashboard from "./pages/dashboard/Dashboard";
 import Create from "./pages/create/Create";
@@ -12,6 +10,7 @@ import Navbar from "./components/navbar/Navbar";
 import Sidebar from "./components/sidebar/Sidebar";
 import { useAuthContext } from "./hooks/useAuthContext";
 import { useEffect } from "react";
+import OnlineUsers from "./components/onlineUsers/OnlineUsers";
 
 const PrivateRoute = (Component) => {
   const { user } = useAuthContext();
@@ -44,6 +43,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
         </Routes>
       </div>
+      {user && <OnlineUsers />}
     </div>
   );
 }

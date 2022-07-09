@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLogin } from "../../hooks/useLogin";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../hooks/useAuthContext";
 import "./styles.css";
 
 const Login = () => {
@@ -8,12 +9,19 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const { login, error, isPending } = useLogin();
   const navigate = useNavigate();
+  const { user } = useAuthContext();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const user = await login(email, password);
     if (user) navigate("/");
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [navigate, user]);
 
   return (
     <form onSubmit={handleSubmit} className="auth-form">
