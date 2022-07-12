@@ -1,16 +1,67 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Select from "react-select";
+import { useGetCollection } from "../../hooks/useCollection";
 import "./styles.css";
 
+const categories = [
+  { value: "development", label: "Development" },
+  { value: "design", label: "Design" },
+  { value: "sales", label: "Sales" },
+  { value: "marketing", label: "Marketing" },
+];
+
 const Create = () => {
-  const [name, setName] = useState("");
-  const [details, setDetails] = useState("");
-  const [dueDate, setDueDate] = useState("");
-  const [category, setCategory] = useState("");
-  const [assignedUsers, setAssignedUsers] = useState([]);
+  const { documents, error } = useGetCollection("users"); // все пользователи из системы 
+  const [users, setUsers] = useState([]); // пользователи преобразованные  а [{value, label}]
+  const [name, setName] = useState(""); // имя проекта
+  const [details, setDetails] = useState(""); // ДЕТАЛИ ПРОЕКТА
+  const [dueDate, setDueDate] = useState(""); // дата завершения проекта
+  const [category, setCategory] = useState(""); // категория проекта
+  const [assignedUsers, setAssignedUsers] = useState([]); // исполнители проекта
+  const [formError, setFormError] = useState(""); // Ошибка в форме
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    if (!category) {
+      setFormError("Please, select a project category!");
+      return;
+    }
+    if (!assignedUsers.length) {
+      setFormError("Please, assign the  project to at laset 1 user ");
+      return;
+    }
+
+    const assignedUsersList = assignedUsers.map((u) => {
+      return {
+        displayName: u.value.displayName,
+        photoURL: u.value.photoURL,
+        id: u.value.id,
+      };
+    });
+
+    const createdBy = {}
+
+    const project = {
+      name,
+      details,
+      category: category.value,
+      dueDate: new Date(dueDate),
+      assignedUsersList,
+      createdBy,
+      comments: []
+    };
   };
+
+  useEffect(() => {
+    if (documents) {
+      setUsers(
+        documents.map((user) => {
+          return { value: { ...user, id: user.id }, label: user.displayName };
+        })
+      );
+    }
+  }, [documents]);
 
   return (
     <div className="create-form">
@@ -44,13 +95,20 @@ const Create = () => {
         </label>
         <label>
           <span>Project category:</span>
-          {/*selected here later */}
+          <Select
+            onChange={(option) => setCategory(option)}
+            options={categories}
+          />
         </label>
         <label>
           <span>Assign to:</span>
-          {/*selected here later */}
+          <Select
+            onChange={(option) => setAssignedUsers(option)}
+            options={users}
+            isMulti
+          />
         </label>
-
+        {formError && <div className="error">{formError}</div>}
         <button className="btn">Add Project</button>
       </form>
     </div>
