@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
-import { useGetCollection } from "../../hooks/useCollection";
+import { useCollection, useGetCollection } from "../../hooks/useCollection";
+import { useAuthContext } from "../../hooks/useAuthContext";
 import "./styles.css";
+import { Timestamp } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 const categories = [
   { value: "development", label: "Development" },
@@ -11,7 +14,10 @@ const categories = [
 ];
 
 const Create = () => {
-  const { documents, error } = useGetCollection("users"); // все пользователи из системы 
+  const navigate = useNavigate()
+  const { user } = useAuthContext(); // берем нашего юзера
+  const { addDocument, response } = useCollection("projects");
+  const { documents, error } = useGetCollection("users"); // все пользователи из системы
   const [users, setUsers] = useState([]); // пользователи преобразованные  а [{value, label}]
   const [name, setName] = useState(""); // имя проекта
   const [details, setDetails] = useState(""); // ДЕТАЛИ ПРОЕКТА
@@ -20,7 +26,7 @@ const Create = () => {
   const [assignedUsers, setAssignedUsers] = useState([]); // исполнители проекта
   const [formError, setFormError] = useState(""); // Ошибка в форме
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!category) {
@@ -40,17 +46,29 @@ const Create = () => {
       };
     });
 
-    const createdBy = {}
+    const createdBy = {
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+      id: user.uid,
+    };
 
     const project = {
       name,
       details,
       category: category.value,
-      dueDate: new Date(dueDate),
+      dueDate: Timestamp.fromDate(new Date(dueDate)),
       assignedUsersList,
       createdBy,
-      comments: []
+      comments: [],
     };
+
+    await addDocument(project);
+    if (!response.error) {
+      navigate('/')
+    }
+    else {
+      console.log(response.error);
+    }
   };
 
   useEffect(() => {
