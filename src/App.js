@@ -41,13 +41,15 @@ function App() {
               <Route path="/" element={PrivateRoute(<Dashboard />)} />
               <Route path="/create" element={PrivateRoute(<Create />)} />
               <Route path="/project/:id" element={PrivateRoute(<Project />)} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
             </Routes>
           </div>
           {user && <OnlineUsers />}
         </>
       )}
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+      </Routes>
     </div>
   );
 }
