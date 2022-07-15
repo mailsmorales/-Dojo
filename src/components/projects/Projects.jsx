@@ -11,7 +11,7 @@ const Projects = ({ projects }) => {
         return (
           <Link to={`/project/${project.id}`} key={project.id}>
             <h4>{project.name}</h4>
-            <p>Due by{project.dueDate.toDate().toDateString()}</p>
+            <p>Срок:{project.dueDate.toDate().toDateString()}</p>
             <div className="assigned-to">
               <ul>
                 {project.assignedUsersList.map((user) => (

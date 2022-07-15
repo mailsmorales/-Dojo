@@ -28,28 +28,26 @@ const PrivateRoute = (Component) => {
 };
 
 function App() {
-  const { user, isReady } = useAuthContext();
+  const { isReady, user } = useAuthContext();
 
   return (
     <div className="App">
-      {isReady && (
-        <>
-          {user && <Sidebar />}
-          <div className="container">
-            <Navbar />
-            <Routes>
-              <Route path="/" element={PrivateRoute(<Dashboard />)} />
-              <Route path="/create" element={PrivateRoute(<Create />)} />
-              <Route path="/project/:id" element={PrivateRoute(<Project />)} />
-            </Routes>
-          </div>
-          {user && <OnlineUsers />}
-        </>
-      )}
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-      </Routes>
+      {isReady && user && <Sidebar />}
+      <div className="container">
+        <Navbar />
+        {isReady && (
+          <Routes>
+            <Route path="/" element={PrivateRoute(<Dashboard />)} />
+            <Route path="/create" element={PrivateRoute(<Create />)} />
+            <Route path="/project/:id" element={PrivateRoute(<Project />)} />
+          </Routes>
+        )}
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Routes>
+      </div>
+      {isReady && user && <OnlineUsers />}
     </div>
   );
 }
