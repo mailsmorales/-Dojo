@@ -1,7 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 
 import Dashboard from "./pages/dashboard/Dashboard";
 import Create from "./pages/create/Create";
@@ -12,6 +10,7 @@ import Navbar from "./components/navbar/Navbar";
 import Sidebar from "./components/sidebar/Sidebar";
 import { useAuthContext } from "./hooks/useAuthContext";
 import { useEffect } from "react";
+import OnlineUsers from "./components/onlineUsers/OnlineUsers";
 
 const PrivateRoute = (Component) => {
   const { user } = useAuthContext();
@@ -29,21 +28,26 @@ const PrivateRoute = (Component) => {
 };
 
 function App() {
-  const { user } = useAuthContext();
+  const { user, isReady } = useAuthContext();
 
   return (
     <div className="App">
-      {user && <Sidebar />}
-      <div className="container">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={PrivateRoute(<Dashboard />)} />
-          <Route path="/create" element={PrivateRoute(<Create />)} />
-          <Route path="/projects/:id" element={PrivateRoute(<Project />)} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-        </Routes>
-      </div>
+      {isReady && (
+        <>
+          {user && <Sidebar />}
+          <div className="container">
+            <Navbar />
+            <Routes>
+              <Route path="/" element={PrivateRoute(<Dashboard />)} />
+              <Route path="/create" element={PrivateRoute(<Create />)} />
+              <Route path="/project/:id" element={PrivateRoute(<Project />)} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+            </Routes>
+          </div>
+          {user && <OnlineUsers />}
+        </>
+      )}
     </div>
   );
 }

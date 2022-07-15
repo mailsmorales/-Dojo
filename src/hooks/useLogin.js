@@ -19,7 +19,7 @@ export const useLogin = () => {
       const usersRef = doc(firestore, "users", user.uid);
 
       await setDoc(usersRef, { isOnline: true }, { merge: true });
-      await dispatch({ type: "LOGIN", playoad: user });
+      await dispatch({ type: "LOGIN", payload: user });
 
       setIsPending(false);
       setError(null);

@@ -2,10 +2,8 @@ import {
   addDoc,
   collection,
   onSnapshot,
-  orderBy,
   query,
   serverTimestamp,
-  where,
 } from "firebase/firestore";
 import { useEffect, useReducer, useState } from "react";
 import { firestore } from "../firebase/config";
@@ -43,11 +41,11 @@ const firestoreReducer = (state, action) => {
   }
 };
 
-export const useCollection = () => {
+export const useCollection = (collectionName) => {
   const [isCancelled, setIsCancelled] = useState(false);
   const [response, dispatch] = useReducer(firestoreReducer, initialState);
 
-  const collectionRef = collection(firestore, "transactions");
+  const collectionRef = collection(firestore, collectionName);
 
   const addDocument = async (newDocument) => {
     dispatch({ type: "IS_PENDING", payload: true });
@@ -72,15 +70,12 @@ export const useCollection = () => {
   return { addDocument, deleteDocument, isCancelled, response };
 };
 
-export const getCollection = (collectionName, userId) => {
+export const useGetCollection = (collectionName, options) => {
   const [documents, setDocuments] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const collectionRef = query(
-      collection(firestore, collectionName),
-      where("userId", "==", userId), 
-    );
+    const collectionRef = query(collection(firestore, collectionName));
 
     const unsubscribe = onSnapshot(collectionRef, (snap) => {
       let results = [];
@@ -96,7 +91,7 @@ export const getCollection = (collectionName, userId) => {
     return () => {
       unsubscribe();
     };
-  }, [collection]);
+  }, [collectionName, options]);
 
   return { documents, error };
 };

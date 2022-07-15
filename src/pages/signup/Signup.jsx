@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSignup } from "../../hooks/useSignup";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../hooks/useAuthContext";
+
 import "./styles.css";
 
 const Signup = () => {
@@ -11,6 +13,7 @@ const Signup = () => {
   const [thumbnailError, setThumbnailError] = useState(null);
   const { signup, error, isPending } = useSignup();
   const navigate = useNavigate();
+  const { user } = useAuthContext();
 
   const handleChangeFile = (event) => {
     const selected = event.target.files[0];
@@ -34,6 +37,11 @@ const Signup = () => {
     await signup(email, password, displayName, thumbnail);
     navigate("/");
   };
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [navigate, user]);
 
   return (
     <form onSubmit={handleSubmit} className="auth-form">
