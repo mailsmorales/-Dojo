@@ -5,7 +5,7 @@ import {
   onSnapshot,
   query,
   serverTimestamp,
-  updateDoc,
+  setDoc,
 } from "firebase/firestore";
 import { useEffect, useReducer, useState } from "react";
 import { firestore } from "../firebase/config";
@@ -71,17 +71,19 @@ export const useCollection = (collectionName) => {
     }
   };
 
-  const deleteDocument = () => {};
-
   const updateDocument = async (docId, newData) => {
     dispatch({ type: "IS_PENDING" });
     try {
-      const updateDoc = await updateDoc(doc(firestore, collectionName, docId), newData);
+      const updateDoc = await setDoc(
+        doc(firestore, "projects", docId),
+        newData,
+        { merge: true }
+      );
       dispatch({ type: "UPDATED_DOCUMENT", payload: updateDoc });
-      return updateDoc
+      return updateDoc;
     } catch (err) {
       dispatch({ type: "ERROR", payload: err.message });
-      return null
+      return null;
     }
   };
 
@@ -89,7 +91,7 @@ export const useCollection = (collectionName) => {
     return () => setIsCancelled(true);
   }, []);
 
-  return { addDocument, deleteDocument, isCancelled, response, updateDocument };
+  return { addDocument, isCancelled, response, updateDocument };
 };
 
 export const useGetCollection = (collectionName, options) => {
