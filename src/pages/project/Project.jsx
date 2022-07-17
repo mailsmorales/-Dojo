@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDocument } from "../../hooks/useDocument";
 import { useParams } from "react-router-dom";
 import "./styles.css";
@@ -8,6 +8,10 @@ import ProjectComments from "./ProjectComments";
 const Project = () => {
   const params = useParams();
   const { document, error } = useDocument("projects", params.id);
+
+  useEffect(() => {
+    console.log(document);
+  }, [document])
 
   if (error) {
     return <div className="error">{error}</div>;
@@ -19,7 +23,7 @@ const Project = () => {
   return (
     <div className="project-details">
       <ProjectSummary project={document} />
-      <ProjectComments />
+      <ProjectComments project={document} />
     </div>
   );
 };

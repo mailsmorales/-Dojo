@@ -1,24 +1,60 @@
-import { serverTimestamp } from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
 import React, { useState } from "react";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import { useCollection } from "../../hooks/useCollection";
+import { v4 as uuid4 } from "uuid";
+import Avatar from "../../components/avatar/Avatar";
+import "./styles.css";
+import { toNow } from "../../helpers/date";
 
-const ProjectComments = () => {
+const ProjectComments = ({ project }) => {
   const { user } = useAuthContext();
+  const { updateDocument, response } = useCollection("projects");
   const [newComment, setNewComment] = useState("");
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const commentToAdd = {
       displayName: user.displayName, // Имя Автора
       photoURL: user.photoURL, // Фотка Автора
       content: newComment, // Сам комментарий
-      createdAt: serverTimestamp(),
-      id: Math.random(),
+      createdAt: Timestamp.fromDate(new Date()),
+      id: uuid4(),
     };
+
+    await updateDocument(project.id, {
+      comments: [...project.comments, commentToAdd],
+    });
+
+    console.log(response);
+
+    if (!response.error) {
+      setNewComment("");
+    }
   };
   return (
     <div className="project-comments">
       <h4>Комментарии к проекту</h4>
 
+      <ul className="comment-list">
+        {project.comments.length > 0 &&
+          project.comments.map((comment) => (
+            <li key={comment.id}>
+              <div className="comment-header">
+                <div className="comment-author">
+                  <Avatar src={comment.photoURL} />
+                  <p>{comment.displayName}</p>
+                </div>
+                <div className="comment-date">
+                  <p>{toNow(comment.createdAt.toDate())}</p>
+                </div>
+              </div>
+              <div className="comment-content">
+                <p>{comment.content}</p>
+              </div>
+            </li>
+          ))}
+      </ul>
       <form className="add-comment" onSubmit={handleSubmit}>
         <label>
           <span>Описание:</span>
