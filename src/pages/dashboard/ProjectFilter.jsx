@@ -9,7 +9,7 @@ const filterList = [
   "sales",
 ];
 
-const ProjectFilter = () => {
+export const ProjectFilter = () => {
   const [currentFilter, setCurrentFilter] = useState("all");
 
   const handleClick = (newFilter) => {
@@ -27,4 +27,3 @@ const ProjectFilter = () => {
   );
 };
 
-export default ProjectFilter;
