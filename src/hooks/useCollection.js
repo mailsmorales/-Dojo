@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   onSnapshot,
   query,
@@ -87,11 +88,21 @@ export const useCollection = (collectionName) => {
     }
   };
 
+  const deleteDocument = async (docId) => {
+    dispatch({ type: "IS_PENDING" });
+    try {
+      await deleteDoc(doc(firestore, collectionName, docId));
+      dispatch({ type: "DELETED_DOCUMENT" });
+    } catch (err) {
+      dispatch({ type: "ERROR", payload: err.message });
+    }
+  };
+
   useEffect(() => {
     return () => setIsCancelled(true);
   }, []);
 
-  return { addDocument, isCancelled, response, updateDocument };
+  return { addDocument, isCancelled, response, updateDocument, deleteDocument };
 };
 
 export const useGetCollection = (collectionName, options) => {
